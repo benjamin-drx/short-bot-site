@@ -29,10 +29,6 @@ if (p.get("code")) {
 try { document.getElementById("cle").value = localStorage.getItem("cle") || ""; } catch (e) {}
 document.getElementById("go").onclick = () => {
   const cle = document.getElementById("cle").value.trim();
-  if (cle && !cle.startsWith("sb")) {
-    document.getElementById("erreur").textContent = "Cette clé ne commence pas par « sb » : c'est sans doute celle de Production. Prends celle de l'onglet Sandbox.";
-    return;
-  }
   try { localStorage.setItem("cle", cle); } catch (e) {}
   const q = new URLSearchParams({client_key: cle,
     scope: "user.info.basic,video.upload", response_type: "code", redirect_uri: ici, state: Math.random().toString(36).slice(2)});
