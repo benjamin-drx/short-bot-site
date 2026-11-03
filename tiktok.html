@@ -25,8 +25,16 @@ if (p.get("code")) {
 } else if (p.get("error")) {
   document.getElementById("erreur").textContent = "TikTok a refusé : " + p.get("error") + " " + (p.get("error_description") || "");
 }
+// La clé client n'est pas secrète : on la garde dans ce navigateur pour ne pas la recopier.
+try { document.getElementById("cle").value = localStorage.getItem("cle") || ""; } catch (e) {}
 document.getElementById("go").onclick = () => {
-  const q = new URLSearchParams({client_key: document.getElementById("cle").value.trim(),
+  const cle = document.getElementById("cle").value.trim();
+  if (cle && !cle.startsWith("sb")) {
+    document.getElementById("erreur").textContent = "Cette clé ne commence pas par « sb » : c'est sans doute celle de Production. Prends celle de l'onglet Sandbox.";
+    return;
+  }
+  try { localStorage.setItem("cle", cle); } catch (e) {}
+  const q = new URLSearchParams({client_key: cle,
     scope: "user.info.basic,video.upload", response_type: "code", redirect_uri: ici, state: Math.random().toString(36).slice(2)});
   location.href = "https://www.tiktok.com/v2/auth/authorize/?" + q;
 };
